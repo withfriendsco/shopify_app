@@ -1,7 +1,7 @@
-*.gem
-.bundle
-Gemfile.lock
-pkg/*
-.DS_Store
-.yardoc
-doc/
+/nbproject/
+/.idea/*
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
