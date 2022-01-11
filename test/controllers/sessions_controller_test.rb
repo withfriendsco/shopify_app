@@ -69,6 +69,14 @@ module ShopifyApp
       assert_template 'shared/redirect'
     end
 
+    test '#new renders the redirect layout if user agent is Shopify POS (Android React Native)' do
+      request.env['HTTP_USER_AGENT'] = 'com.jadedpixel.pos Shopify POS/4.24.0-mal+30112/Android/9/google/Android SDK ' \
+                   'built for x86/development MobileMiddlewareSupported'
+
+      get :new, params: { shop: 'my-shop' }
+      assert_template 'shared/redirect'
+    end
+
     test '#new renders the redirect layout if user agent is Shopify POS (iOS)' do
       request.env['HTTP_USER_AGENT'] = 'com.jadedpixel.pos Shopify POS/4.7 (iPad; iOS 11.0.1; Scale/2.00)'
       get :new, params: { shop: 'my-shop' }
@@ -99,20 +107,20 @@ module ShopifyApp
 
     test '#new redirects to the auth page if top_level param' do
       get :new, params: { shop: 'my-shop', top_level: true }
-      assert_redirected_to '/auth/shopify'
+      assert_template 'shared/post_redirect_to_auth_shopify'
     end
 
     test "#new should authenticate the shop if a valid shop param exists non embedded" do
       ShopifyApp.configuration.embedded_app = false
       get :new, params: { shop: 'my-shop' }
-      assert_redirected_to '/auth/shopify'
+      assert_template 'shared/post_redirect_to_auth_shopify'
       assert_equal session['shopify.omniauth_params'][:shop], 'my-shop.myshopify.com'
     end
 
     test '#new authenticates the shop if we\'ve just returned from top-level login flow' do
       session['shopify.top_level_oauth'] = true
       get :new, params: { shop: 'my-shop', top_level: true }
-      assert_redirected_to '/auth/shopify'
+      assert_template 'shared/post_redirect_to_auth_shopify'
       assert_equal session['shopify.omniauth_params'][:shop], 'my-shop.myshopify.com'
     end
 
@@ -123,15 +131,6 @@ module ShopifyApp
       request.env['HTTP_USER_AGENT'] = 'Version/12.0 Safari'
       get :new, params: { shop: 'my-shop' }
       assert_nil session['shopify.top_level_oauth']
-    end
-
-    test "#new should trust the shop param over the current session" do
-      previously_logged_in_shop_id = 1
-      session[:shopify] = previously_logged_in_shop_id
-      session['shopify.granted_storage_access'] = true
-      new_shop_domain = "new-shop.myshopify.com"
-      get :new, params: { shop: new_shop_domain }
-      assert_redirected_to_top_level(new_shop_domain)
     end
 
     test "#new should render a full-page if the shop param doesn't exist" do
@@ -254,26 +253,25 @@ module ShopifyApp
       assert_redirected_to "#{ShopifyApp.configuration.root_url}?shop=shop.myshopify.com"
     end
 
-    test "#destroy should clear shopify from session and redirect to login with notice" do
+    test "#destroy should reset rails session and redirect to login with notice" do
       shop_id = 1
       session[:shopify] = shop_id
       session[:shopify_domain] = 'shop1.myshopify.com'
       session[:shopify_user] = { 'id' => 1, 'email' => 'foo@example.com' }
+      session[:foo] = 'bar'
 
       get :destroy
 
       assert_nil session[:shopify]
       assert_nil session[:shopify_domain]
       assert_nil session[:shopify_user]
+      assert_nil session[:foo]
       assert_redirected_to login_path
       assert_equal 'Successfully logged out', flash[:notice]
     end
 
     test '#destroy should redirect with notice in spanish' do
       I18n.locale = :es
-      shop_id = 1
-      session[:shopify] = shop_id
-      session[:shopify_domain] = 'shop1.myshopify.com'
 
       get :destroy
 

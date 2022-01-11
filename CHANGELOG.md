@@ -1,5 +1,42 @@
-Unreleased
+18.0.3 (Jan 7, 2022)
 ----------
+* Change regexp to match standard ngrok URLs. [#1311](https://github.com/Shopify/shopify_app/pull/1311)
+* Make `EnsureAuthenticatedLinks` compatible with AppBridge 2.0. [#1277](https://github.com/Shopify/shopify_app/pull/1277)
+  * Includes the `host` parameter when redirecting to the splash page in an unauthenticated state.
+
+18.0.2 (Jun 15, 2021)
+----------
+* Added careers link to readme. [#1274](https://github.com/Shopify/shopify_app/pull/1274)
+
+18.0.1 (May 7, 2021)
+----------
+* Fix bug causing OAuth flow to fail due to CSP violation. [#1265](https://github.com/Shopify/shopify_app/pull/1265)
+
+18.0.0 (May 3, 2021)
+----------
+* Support OmniAuth 2.x 
+  * If your app has custom OmniAuth configuration, please refer to the [OmniAuth 2.0 upgrade guide](https://github.com/omniauth/omniauth/wiki/Upgrading-to-2.0).
+* Support App Bridge version 2.x in the Embedded App layout. [#1241](https://github.com/Shopify/shopify_app/pull/1241)
+
+17.2.1 (April 1, 2021)
+----------
+* Bug fix: Lock the CDN App Bridge version to `v1.X.Y` in the Embedded App layout [#1238](https://github.com/Shopify/shopify_app/pull/1238)
+  * App Bridge `v2.0` is a non-backwards compatible release
+  * A future major shopify_app gem release will support only App Bridge `v2.0`
+
+17.2.0 (April 1, 2021)
+----------
+* Support Rails `v6.1` [#1221](https://github.com/Shopify/shopify_app/pull/1221)
+  * Check out [Upgrading to `v17.2.0`](/docs/Upgrading.md#upgrading-to-v1720) in the Upgrading.md guide for the changes needed to support Rails `v6.1`
+
+17.1.1 (March 12, 2021)
+----------
+* Fix issues with mocking OmniAuth callback controller tests [#1210](https://github.com/Shopify/shopify_app/pull/1210)
+
+17.1.0 (March 5, 2021)
+----------
+* Create OmniAuthConfiguration object to build future OmniAuth strategies [#1190](https://github.com/Shopify/shopify_app/pull/1190)
+* Added access scopes to Shop and User models, added checks to handle scope changes [#1192](https://github.com/Shopify/shopify_app/pull/1192) [#1197](https://github.com/Shopify/shopify_app/pull/1197)
 
 17.0.5 (January 27, 2021)
 ----------
